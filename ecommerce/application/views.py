@@ -6,7 +6,10 @@ from django.http import JsonResponse
 
 def index(request):
     products = Product.objects.all()
-    return render(request,"index.html",{'products' : products})
+    categories = [product.category.lower() for product in products if product.category]
+    set_categories = set(categories)
+    return render(request, "index.html", {'products': products, 'categories': set_categories})
+
 
 def detail(request,id):
     product = get_object_or_404(Product,id=id)
@@ -79,3 +82,14 @@ def removeCart(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
 
+def testimo(request):
+    return render(request,"testimonials.html")
+
+def contact(request):
+    return render(request,'contact.html')
+
+def portfolio(request):
+    products = Product.objects.all()
+    categories = [product.category.lower() for product in products if product.category]
+    set_categories = set(categories)
+    return render(request, "portfolio.html", {'products': products, 'categories': set_categories})

@@ -15,7 +15,7 @@ class Product(models.Model):
 
 class ImageGallery(models.Model):
     product = models.ForeignKey(Product,default=None,on_delete=models.CASCADE)
-    images = models.FileField(upload_to='images/')
+    images = models.ImageField(upload_to='images/')
     
     def __str__(self): 
         return self.product.product_name

@@ -23,8 +23,25 @@ class ImageGallery(models.Model):
 class Cart(models.Model):
     user = models.ForeignKey(User, default=None,on_delete=models.CASCADE)
     product = models.ForeignKey(Product,default=None,on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(null=True, blank=True)
 
     @property
     def total_cost(self):
         return self.quantity * self.product.price
+
+class Order(models.Model):
+    id_order = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, default="")
+    phone = models.CharField(max_length=100, default="")
+    address = models.CharField(max_length=100, default="")
+    value = models.CharField(max_length=100, default="")
+    status = models.CharField(max_length=100, default="")
+    date = models.DateField(max_length=300)
+
+class OrderDetail(models.Model):
+    id_orderdetail = models.BigAutoField(primary_key=True)
+    order = models.ForeignKey(Order,default=None,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,default=None,on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(null=True, blank=True)
+    

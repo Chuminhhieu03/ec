@@ -12,6 +12,8 @@ urlpatterns = [
     path('testimo/',views.testimo,name="testimo"),
     path('contact/',views.contact,name="contact"),
     path('portfolio/',views.portfolio,name="portfolio"),
-
-    
+    path('createOrder/',views.createOrder,name="createOrder"),
+    path('order/',views.getOrder,name="getOrder"),
+    path('order/<id>',views.getOrderdt,name="getOrder"),
+    path('demo/',views.demo,name="demo")
 ]

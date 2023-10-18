@@ -1,6 +1,7 @@
+from datetime import datetime
 from django.shortcuts import render,get_object_or_404,redirect
 from django.contrib import messages
-from .models import Product, ImageGallery, Cart
+from .models import Product, ImageGallery, Cart, Order, OrderDetail
 from django.http import JsonResponse
 # Create your views here.
 
@@ -10,7 +11,34 @@ def index(request):
     set_categories = set(categories)
     return render(request, "index.html", {'products': products, 'categories': set_categories})
 
+def testimo(request):
+    return render(request,"testimonials.html")
 
+def contact(request):
+    return render(request,'contact.html')
+
+def portfolio(request):
+    if request.method == "GET":
+        products = Product.objects.all()
+        categories = [product.category.lower() for product in products if product.category]
+        set_categories = set(categories)
+        return render(request, "portfolio.html", {'products': products, 'categories': set_categories})
+    if request.method == "POST":
+        try:  
+            product_name = request.POST.get('product_name')
+            products = Product.objects.all()
+            if product_name:
+                products = products.filter(product_name__icontains=product_name)
+            categories = [product.category.lower() for product in products if product.category]
+            set_categories = set(categories)
+            # Chuyển đổi QuerySet thành danh sách Python
+            products_list = list(products.values())
+            return JsonResponse({'status': 'success', 'products': products_list, 'categories': list(set_categories)})
+        except Exception as e:
+            print(f"Error: {e}")
+            return JsonResponse({'status': 'error', 'message': 'Cant Search'})
+
+    
 def detail(request,id):
     product = get_object_or_404(Product,id=id)
     photos = ImageGallery.objects.filter(product = product)
@@ -22,7 +50,8 @@ def detail(request,id):
 def showCart(request):
     carts = Cart.objects.filter(user=request.user)
     total_cost = sum(cart.total_cost for cart in carts)
-    return render(request, 'payment.html', {'carts': carts, 'total_cost': total_cost})
+    total_costAll = total_cost + 10
+    return render(request, 'payment.html', {'carts': carts, 'total_cost': total_cost, 'total_costAll' : total_costAll})
 
 def addToCart(request):
     user = request.user
@@ -82,14 +111,49 @@ def removeCart(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
 
-def testimo(request):
-    return render(request,"testimonials.html")
 
-def contact(request):
-    return render(request,'contact.html')
+def createOrder(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        value = request.POST.get('value')
+        user = request.user
+        date = datetime.now().strftime('%Y-%m-%d')
+        try:
+            # lưu thông tin order
+            new_order = Order(user=user, name=name, phone=phone, address=address, value=value, status="handle", date=date)
+            new_order.save()
+            carts = Cart.objects.filter(user=user)
 
-def portfolio(request):
-    products = Product.objects.all()
-    categories = [product.category.lower() for product in products if product.category]
-    set_categories = set(categories)
-    return render(request, "portfolio.html", {'products': products, 'categories': set_categories})
+            # Tạo order detail
+            for cart in carts:
+                order_detail = OrderDetail(
+                    order=new_order,
+                    product=cart.product,
+                    quantity=cart.quantity
+                )
+                order_detail.save()
+                cart.delete()
+                #Xóa đi cart tương ứng
+            messages.success(request,"You have create order success")
+            return redirect('/order')
+        except Exception as e:
+            print(f"Error: {e}")
+            return JsonResponse({'status': 'error', 'message': 'Order cant create'})
+
+def getOrder(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request,'order.html',{'orders' : orders })
+
+def getOrderdt(request,id):
+    try:
+        order = Order.objects.get(id_order=id)
+        orderDetails = OrderDetail.objects.filter(order=order)
+        return render(request,'order-detail.html', {'order' : order,'orderDatails' : orderDetails})
+    except Exception as e:
+        print(f"Error: {e}")
+        return JsonResponse({'status': 'error', 'message': 'Order detail error'})
+
+def demo(request):
+    return render(request,'demo.html')

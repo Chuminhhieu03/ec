@@ -1,6 +1,7 @@
 {% extends 'base.html' %} 
 {% block title %}Home{% endblock title %} 
 {% block content %}
+{% load static %}
 
     <main id="main">
       <!-- ======= Breadcrumbs ======= -->
@@ -24,7 +25,7 @@
             <div class="col-lg-6" data-aos="fade-up">
               <div class="testimonial-item">
                 <img
-                  src="assets/img/testimonials/testimonials-1.jpg"
+                  src="{% static 'assets/img/testimonials/testimonials-1.jpg' %}"
                   class="testimonial-img"
                   alt=""
                 />
@@ -44,7 +45,7 @@
             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
               <div class="testimonial-item mt-4 mt-lg-0">
                 <img
-                  src="assets/img/testimonials/testimonials-2.jpg"
+                  src="{% static 'assets/img/testimonials/testimonials-2.jpg' %}"
                   class="testimonial-img"
                   alt=""
                 />
@@ -64,7 +65,7 @@
             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
               <div class="testimonial-item mt-4">
                 <img
-                  src="assets/img/testimonials/testimonials-3.jpg"
+                  src="{% static 'assets/img/testimonials/testimonials-3.jpg' %}"
                   class="testimonial-img"
                   alt=""
                 />
@@ -83,7 +84,7 @@
             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
               <div class="testimonial-item mt-4">
                 <img
-                  src="assets/img/testimonials/testimonials-4.jpg"
+                  src="{% static 'assets/img/testimonials/testimonials-4.jpg' %}"
                   class="testimonial-img"
                   alt=""
                 />
@@ -103,7 +104,7 @@
             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
               <div class="testimonial-item mt-4">
                 <img
-                  src="assets/img/testimonials/testimonials-5.jpg"
+                  src="{% static 'assets/img/testimonials/testimonials-5.jpg' %}"
                   class="testimonial-img"
                   alt=""
                 />
@@ -123,7 +124,7 @@
             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="500">
               <div class="testimonial-item mt-4">
                 <img
-                  src="assets/img/testimonials/testimonials-6.jpg"
+                  src="{% static 'assets/img/testimonials/testimonials-6.jpg' %}"
                   class="testimonial-img"
                   alt=""
                 />

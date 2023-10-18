@@ -83,3 +83,5 @@ def handlelogout(request):
     messages.info(request,"Logout Success")
     return redirect('/auth/login')
 
+def handleprofile(request):
+    return render(request,'my-profile.html')

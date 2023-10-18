@@ -3,19 +3,23 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
     <title>{% block title %} {% endblock title %}</title>
     <meta content="" name="description" />
     <meta content="" name="keywords" />
-
+    
     <!-- Favicons -->
     <link href="{% static '/assets/img/icon.jpg' %}" rel="icon" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
     <!-- Google Fonts -->
     <link
-      href="'https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Muli:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Muli:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
       rel="stylesheet"
     />
 
@@ -24,7 +28,7 @@
       href="{% static '/assets/vendor/animate.css/animate.min.css' %}"
       rel="stylesheet"
     />
-    <link href="{% static '/assets/vendor/aos/aos.css" rel="stylesheet" />
+    <link href="{% static '/assets/vendor/aos/aos.css' %} " rel="stylesheet" />
     <link
       href="{% static '/assets/vendor/bootstrap/css/bootstrap.min.css' %}"
       rel="stylesheet"
@@ -46,6 +50,8 @@
       rel="stylesheet"
     />
 
+    <link href="{% static '/assets/css/cssPlus.css' %}" rel="stylesheet" />
+
     <!-- Template Main CSS File -->
     <link href="{% static '/assets/css/style.css' %}" rel="stylesheet" />
   </head>
@@ -61,19 +67,9 @@
             ><a href="mailto:contact@example.com">contact@example.com</a></i
           >
           <i class="bi bi-phone d-flex align-items-center ms-4"
-            ><span>+1 5589 55488 55</span></i
+            ><span>096969696</span></i
           >
         </div>
-        {% if user.is_authenticated %}     
-          <div class="log-in d-none d-md-flex align-items-center">
-            <div>Hello {{ request.user.username }}</div>
-            <a href="auth/logout/" class="log-in">Logout</a>
-          </div>
-        {% else %}
-          <div class="log-in d-none d-md-flex align-items-center">
-            <a href="auth/login/" class="log-in">Sign in / Sign up </a>
-          </div>
-        {% endif %}
       </div>
     </section>
 
@@ -89,10 +85,26 @@
         <nav id="navbar" class="navbar">
           <ul>
             <li><a class="active" href="/">Home</a></li>
-            <li><a href="/testimo">Testimonials</a></li>
             <li><a href="/portfolio">Portfolio</a></li>
+            <li><a href="/testimo">Testimonials</a></li>
             <li><a href="/contact">Contact</a></li>
-            <li><a href="/show">Payment</a></li>
+
+            {% if user.is_authenticated %}
+            <li class="dropdown">
+              <a href="#"
+                ><span>Hello {{ request.user.username }}</span>
+                <i class="bi bi-chevron-down"></i
+              ></a>
+              <ul>
+                <li><a href="/auth/profile">My Profile</a></li>
+                <li><a href="/order">My Order</a></li>
+                <li><a href="/show">My Shopping Cart</a></li>
+                <li><a href="/auth/logout">Logout</a></li>
+              </ul>
+            </li>
+            {% else %}
+            <li><a href="/auth/login">Login</a></li>
+            {% endif %}
           </ul>
           <i class="bi bi-list mobile-nav-toggle"></i>
         </nav>
@@ -100,14 +112,25 @@
       </div>
     </header>
     <!-- End Header -->
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% block content %} {% endblock content %}
+    {% if messages %} {% for message in messages %}
+    <div class="container-fluid text-center">
+      <div class="row">
+        <div class="col-xs-4 col-sm-3 col-sm-offset-3 noti-right">
+          <div class="new-message-box">
+            <div class="new-message-box-{{message.tags}}">
+              <div class="info-tab tip-icon-{{message.tags}}" title="error">
+                <i></i>
+              </div>
+              <div class="tip-box-{{message.tags}}">
+                <!--<p><strong>Tip:</strong> If you want to enable the fading transition effect while closing the alert boxes, apply the classes <code>.fade</code> and <code>.in</code> to them along with the contextual class.</p>-->
+                <p>{{message}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %} {% endif %} {% block content %} {% endblock content %}
 
     <!-- ======= Footer ======= -->
     <footer id="footer">
@@ -207,6 +230,19 @@
       ><i class="bi bi-arrow-up-short"></i
     ></a>
 
+    <script>
+      setTimeout(function () {
+        var element = document.querySelector(".new-message-box");
+        element.classList.add("active");
+      }, 100); // Chờ 0.1 giây trước khi thêm lớp 'active'
+
+      // Sử dụng JavaScript để ẩn thông báo sau 2 giây
+      setTimeout(function () {
+        var element = document.querySelector(".new-message-box");
+        element.classList.remove("active");
+      }, 2000);
+    </script>
+
     <!-- Vendor JS Files -->
     <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
     <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
@@ -219,6 +255,7 @@
     <!-- Template Main JS File -->
     <script src="{% static 'assets/js/main.js' %}"></script>
     <script src="{% static 'assets/js/cartdetail.js' %}"></script>
+    <script src="{% static 'assets/js/ajax.js' %}"></script>
     <script src="{% static 'assets/js/login.js' %}"></script>
   </body>
 </html>

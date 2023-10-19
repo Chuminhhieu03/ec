@@ -48,12 +48,18 @@ def detail(request,id):
     })
 
 def showCart(request):
+    if not request.user.is_authenticated:
+        messages.warning(request,"You need to log in to access")
+        return redirect('/auth/login')
     carts = Cart.objects.filter(user=request.user)
     total_cost = sum(cart.total_cost for cart in carts)
     total_costAll = total_cost + 10
     return render(request, 'payment.html', {'carts': carts, 'total_cost': total_cost, 'total_costAll' : total_costAll})
 
 def addToCart(request):
+    if not request.user.is_authenticated:
+        messages.warning(request,"You need to log in to access")
+        return redirect('/auth/login')
     user = request.user
     product_id = request.GET.get('product_id')
     product = Product.objects.get(id=product_id)
@@ -122,7 +128,7 @@ def createOrder(request):
         date = datetime.now().strftime('%Y-%m-%d')
         try:
             # lưu thông tin order
-            new_order = Order(user=user, name=name, phone=phone, address=address, value=value, status="handle", date=date)
+            new_order = Order(user=user, name=name, phone=phone, address=address, value=value, status="Received", date=date)
             new_order.save()
             carts = Cart.objects.filter(user=user)
 
@@ -143,10 +149,16 @@ def createOrder(request):
             return JsonResponse({'status': 'error', 'message': 'Order cant create'})
 
 def getOrder(request):
+    if not request.user.is_authenticated:
+        messages.warning(request,"You need to log in to access")
+        return redirect('/auth/login')
     orders = Order.objects.filter(user=request.user)
     return render(request,'order.html',{'orders' : orders })
 
 def getOrderdt(request,id):
+    if not request.user.is_authenticated:
+        messages.warning(request,"You need to log in to access")
+        return redirect('/auth/login')
     try:
         order = Order.objects.get(id_order=id)
         orderDetails = OrderDetail.objects.filter(order=order)

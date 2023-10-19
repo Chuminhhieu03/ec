@@ -132,6 +132,7 @@ h2 {
     <div class="container">
        <h2 class="mb-5">My Order </h2>
        <div class="table-responsive">
+        {% if orders|length > 0 %}
           <table class="table table-striped custom-table">
              <thead>
                 <tr>
@@ -160,6 +161,9 @@ h2 {
                 {% endfor %}
              </tbody>
           </table>
+        {% else %}
+        <div style="color : white">You don't have any orders yet </div>
+        {% endif %}
        </div>
     </div>
  </div>

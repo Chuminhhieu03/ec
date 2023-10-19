@@ -1,5 +1,8 @@
+from django.http import JsonResponse
+from django.contrib.auth.hashers import check_password
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
+from .models import UserProfile
 from django.views.generic import View
 
 from django.contrib import messages
@@ -14,22 +17,27 @@ from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.auth import authenticate,login,logout
 # Create your views here.
+# Hàm đăng nhập
 def signup(request):
     if request.method=="POST":
+        username= request.POST['username']
         email=request.POST['email']
         password=request.POST['pass1']
         confirm_password=request.POST['pass2']
+        if User.objects.filter(username=username).exists():
+            messages.warning(request,"This username already exists")
+            return render(request,'login.html') 
+        if User.objects.filter(email=email).exists():
+            messages.warning(request,"This email already exists")
+            return render(request,'login.html') 
         if password!=confirm_password:
-            messages.warning(request,"Password is Not Matching")
-            return render(request,'signup.html')                   
-        try:
-            if User.objects.get(username=email):
-                messages.info(request,"Email is Taken")
-                return render(request,'signup.html')
-        except Exception as identifier:
-            pass
-        user = User.objects.create_user(email,email,password)
+            messages.warning(request,"The two passwords do not match")
+            return render(request,'login.html')                   
+        user = User.objects.create_user(username,email,password)
+        user.first_name = "Member #" + str(user.id)
         user.is_active=False
+        user.userprofile = UserProfile()
+        user.userprofile.save()
         user.save()
         email_subject="Activate Your Account"
         message=render_to_string('activate.html',{
@@ -62,9 +70,9 @@ class ActivateAccountView(View):
 
 def handlelogin(request):
     if request.method=="POST":
-        username=request.POST['email']
-        userpassword=request.POST['password']
-        myuser=authenticate(username=username,password=userpassword)
+        username=request.POST['username']
+        password=request.POST['password']
+        myuser=authenticate(username=username,password=password)
 
         if myuser is not None:
             login(request,myuser)
@@ -85,3 +93,37 @@ def handlelogout(request):
 
 def handleprofile(request):
     return render(request,'my-profile.html')
+
+def changeProfile(request):
+    if not request.user.is_authenticated:
+        messages.warning(request,"You need to log in to access")
+        return redirect('/auth/login')
+    if request.method == "POST":
+        current_user = request.user
+        user = User.objects.get(id=current_user.id)
+        user.first_name = request.POST.get('first_name')
+        user.userprofile.phone = request.POST.get('phone')
+        oldpass = request.POST.get('oldpass')
+        pass1 = request.POST.get('pass1')
+        pass2 = request.POST.get('pass2')
+        try:
+            if request.POST.get('changepass') != None:
+                if not check_password(oldpass, user.password):
+                    messages.warning(request,"Incorrect Password")
+                    return redirect('/auth/profile')
+                if pass1 == pass2:
+                    user.set_password(pass1)
+                    user.save()
+                else:
+                    messages.warning(request,"Password not same")
+                    return redirect('/auth/profile')
+            if len(request.FILES) != 0:
+                user.userprofile.avatar = request.FILES['avatar']
+            user.userprofile.save()
+            user.save() 
+            messages.success(request,"You have updated succes")
+            return redirect('/auth/login')
+        except Exception as e:
+            print(f"Error: {e}")
+            return JsonResponse({'status': 'error', 'message': 'Order detail error'})
+

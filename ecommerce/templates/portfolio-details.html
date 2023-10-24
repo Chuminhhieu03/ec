@@ -1,0 +1,92 @@
+{% extends 'base.html' %} 
+{% block title %}Prodcut Details{% endblock title %} 
+{% block content %}
+
+<main id="main">
+  <!-- ======= Breadcrumbs ======= -->
+  <section id="breadcrumbs" class="breadcrumbs">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Prodcut Details</h2>
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li>Prodcut Details</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+  <!-- End Breadcrumbs -->
+
+  <!-- ======= Portfolio Details Section ======= -->
+  <section id="portfolio-details" class="portfolio-details">
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-lg-8">
+          <div class="portfolio-details-slider swiper">
+            <div class="swiper-wrapper align-items-center">
+              {% for photo in photos %}
+              <div class="swiper-slide">
+                <img src="{{photo.images.url}}" alt="" />
+              </div>
+              {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="portfolio-info">
+            <h3>Information</h3>
+            <ul>
+              <li><strong>Name</strong>: {{product.product_name}}</li>
+              <li><strong>Category</strong>: {{product.category}}</li>
+              <li><strong>Date of manufacture</strong>: {{product.date}}</li>
+              <li><strong>Price</strong>: {{product.price}} $</li>
+              <style>
+                .add-to-cart-button {
+                  background-color: #48cae4;
+
+                  color: white;
+
+                  padding: 10px 20px;
+
+                  border: none;
+
+                  border-radius: 4px;
+
+                  margin-left: 30px;
+                }
+              </style>
+
+              <!-- HTML code -->
+
+              
+              <form action="/addToCart" method="GET">
+                <label for="quantity">Quantity: </label>
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <select id="quantity" name="quantity">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+                <button type="submit" class="add-to-cart-button">
+                    Add to cart
+                </button>
+              </form>
+            </ul>
+          </div>
+          <div class="portfolio-description">
+            <h2>Description</h2>
+            <p>{{product.description}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- End Portfolio Details Section -->
+</main>
+<!-- End #main -->
+
+{% endblock content %}

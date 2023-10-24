@@ -1,3 +1,60 @@
+function convertIsoToMmDdYy(isoDate) {
+  const dateObj = new Date(isoDate);
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  const year = dateObj.getFullYear();
+
+  return `${month}/${day}/${year}`;
+}
+
+document.querySelector("#makeComment").addEventListener('submit', function(event) {
+  event.preventDefault(); // Ngăn chặn hành động mặc định của form
+  var formData = new FormData(this);
+
+  $.ajax({
+      url: '/makeComment/', // Đường dẫn URL của hàm xử lý tạo comment
+      type: 'POST',
+      data: formData,
+      processData: false,  // Tắt xử lý dữ liệu
+      contentType: false,  // Tắt đặt tiêu đề Content-Type
+      success: function(response) {
+        var comments = response.comments;
+        console.log(comments)
+        var container = document.querySelector("#comment-product-container");
+        var length = document.querySelector('#length-comment')
+        // Xóa danh sách sản phẩm hiện tại
+        container.innerHTML = "";
+        length.innerHTML = comments.length + " Comments";
+        // Thêm các sản phẩm tìm kiếm vào danh sách
+        comments.forEach(function (comment) {
+          container.innerHTML += `
+            <div class="media">
+              <div class="d-flex">
+                <div class="col-sm-3 col-lg-2 hidden-xs commnent-img">
+                  <img class="media-object" src="${comment.avatar}" alt="">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">${comment.full_name}</h4>
+                    <p>${comment.content}</p>
+                    <div>
+                      <ul class="list-unstyled list-inline media-detail pull-left">
+                        <li><i class="fa fa-calendar"></i>${convertIsoToMmDdYy(comment.date)}</li>
+                    </ul>
+                    </div>
+                </div>
+              </div>
+            </div>`
+                ;
+        });
+      },
+      error: function(error) {
+          console.error('Error:', error);
+      }
+  });
+  document.getElementById("makeComment").reset();
+});
+
+
 
 const select = (el, all = false) => {
   el = el.trim();
@@ -21,7 +78,6 @@ const on = (type, el, listener, all = false) => {
 
 function filterProduct() {
   let portfolioContainer = select(".portfolio-container");
-  console.log("CMH");
   if (portfolioContainer) {
     let portfolioIsotope = new Isotope(portfolioContainer, {
       itemSelector: ".portfolio-item",
@@ -51,21 +107,13 @@ function filterProduct() {
     );
   }
 }
-
+// ajax phục vụ cho phần tìm kiếm 
 document
   .querySelector("form#search")
   .addEventListener("submit", function (event) {
     event.preventDefault();
     var product_name = document.getElementById("searchProduct").value;
     var csrf_token = document.getElementById("csrf_token_search").value;
-
-    // Xóa các script hiện tại
-    var scriptToRemove = document.querySelector(
-      'script[src="/static/assets/vendor/isotope-layout/isotope.pkgd.min.js"]'
-    );
-    if (scriptToRemove) {
-      scriptToRemove.remove();
-    }
 
     // Sử dụng AJAX để gửi yêu cầu tìm kiếm
     $.ajax({
@@ -107,3 +155,8 @@ document
       },
     });
   });
+
+
+
+
+  

@@ -44,4 +44,12 @@ class OrderDetail(models.Model):
     order = models.ForeignKey(Order,default=None,on_delete=models.CASCADE)
     product = models.ForeignKey(Product,default=None,on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(null=True, blank=True)
+
+class Comment(models.Model):
+    product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, default=None, on_delete=models.CASCADE)
+    content = models.TextField(max_length=500, default="")
+    date = models.DateTimeField(auto_now_add=True)
+    avatar = models.CharField(max_length=255, default="", blank=True)
+    full_name = models.CharField(max_length=255, default="", blank=True)
     

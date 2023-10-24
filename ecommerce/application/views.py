@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import render,get_object_or_404,redirect
 from django.contrib import messages
-from .models import Product, ImageGallery, Cart, Order, OrderDetail
+from .models import Product, ImageGallery, Cart, Order, OrderDetail, Comment
 from django.http import JsonResponse
 # Create your views here.
 
@@ -42,9 +42,11 @@ def portfolio(request):
 def detail(request,id):
     product = get_object_or_404(Product,id=id)
     photos = ImageGallery.objects.filter(product = product)
+    comments = Comment.objects.filter(product=product).order_by('-date')
     return render(request,"portfolio-details.html",{
         'product' : product,
-        'photos' : photos
+        'photos' : photos,
+        'comments' : comments
     })
 
 def showCart(request):
@@ -166,6 +168,30 @@ def getOrderdt(request,id):
     except Exception as e:
         print(f"Error: {e}")
         return JsonResponse({'status': 'error', 'message': 'Order detail error'})
+
+
+def makeComment(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You need to log in to access")
+        return redirect('/auth/login')
+    try:
+        user = request.user
+        product_id = request.POST.get('product')
+        product = Product.objects.get(id=product_id)
+        content = request.POST.get('content')
+        # Lấy avatar của user từ UserProfile
+        avatar = user.userprofile.avatar.url if hasattr(user, 'userprofile') and user.userprofile.avatar else ""
+        # Lấy full_name của user
+        full_name = user.first_name
+        comment = Comment(product=product, user=user, content=content, avatar=avatar, full_name=full_name)
+        comment.save()
+        comments = Comment.objects.filter(product=product).order_by('-date')
+        comments_list = list(comments.values())
+        return JsonResponse({'status': 'success', 'comments': comments_list})
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status': 'error', 'message': 'Comment error'})
+
 
 def demo(request):
     return render(request,'demo.html')

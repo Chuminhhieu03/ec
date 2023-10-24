@@ -15,5 +15,6 @@ urlpatterns = [
     path('createOrder/',views.createOrder,name="createOrder"),
     path('order/',views.getOrder,name="getOrder"),
     path('order/<id>',views.getOrderdt,name="getOrder"),
+    path('makeComment/',views.makeComment,name="makeComment"),
     path('demo/',views.demo,name="demo")
 ]

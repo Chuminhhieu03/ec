@@ -1,5 +1,5 @@
 from django.contrib import admin
-from application.models import Product, ImageGallery, Cart, Order, OrderDetail
+from application.models import Product, ImageGallery, Cart, Order, OrderDetail, Comment
 
 class ImageGalleryAdmin(admin.StackedInline):
     model = ImageGallery
@@ -15,3 +15,4 @@ class ImageGalleryAdmin(admin.ModelAdmin):
 admin.site.register(Cart)
 admin.site.register(Order)
 admin.site.register(OrderDetail)
+admin.site.register(Comment)

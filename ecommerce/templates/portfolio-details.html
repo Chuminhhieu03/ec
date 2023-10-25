@@ -204,8 +204,6 @@
               </style>
 
               <!-- HTML code -->
-
-              
               <form action="/addToCart" method="GET">
                 <label for="quantity">Quantity: </label>
                 <input type="hidden" name="product_id" value="{{product.id}}">
@@ -224,7 +222,7 @@
           </div>
           <div class="portfolio-description">
             <h2>Description</h2>
-            <p>{{product.description}}</p>
+            <div class="p-3">{{ product.description|linebreaks }}</div>
           </div>
         </div>
       </div>
@@ -238,7 +236,8 @@
   <section class="content-item" id="comments">
     <div class="container">   
       <div class="row justify-content-center">
-            <div class="col-sm-8">   
+            <div class="col-sm-8">
+              {% if user.is_authenticated %}
               <form id="makeComment">
                 {% csrf_token %}
                   <input type="hidden" name="product" value="{{product.id}}">
@@ -255,7 +254,7 @@
                         </div>  	
                     </fieldset>
                 </form>
-                
+              {% endif %}
                 <h3 id="length-comment">{{comments|length}} Comments</h3>
                 <div id="comment-product-container">
                 {% if comments|length > 0 %}

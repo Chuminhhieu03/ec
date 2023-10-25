@@ -1507,6 +1507,13 @@ input[type="password"]::-ms-clear {
   transition: opacity 0.2s 0s, visibility 0s 0s;
 }
 
+.cd-signin-modal__message {
+  padding: 1.4em 1.4em 0;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
 @media only screen and (min-width: 600px) {
   .cd-signin-modal__form {
     padding: 2em;
@@ -1531,6 +1538,11 @@ input[type="password"]::-ms-clear {
   .cd-signin-modal__input[type="submit"] {
     padding: 16px 0;
   }
+
+  .cd-signin-modal__message {
+    padding: 2em 1em 0;
+    font-size: 1.1rem;
+  }
 }
 
 .cd-signin-modal__block {
@@ -1540,6 +1552,22 @@ input[type="password"]::-ms-clear {
 .cd-signin-modal__block.cd-signin-modal__block--is-selected {
   display: block;
 }
+
+/* --------------------- RESET -------------------------- */
+.cd-signin-modal__bottom-message {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: -70px;
+  text-align: center;
+  font-size: 1rem;
+  padding: 0; 
+}
+
+.cd-signin-modal__bottom-message a {
+  font-size: 1.2rem;
+}
+
 
 /* ------------------------------------------------------------
 Error 

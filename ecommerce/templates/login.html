@@ -17,6 +17,9 @@
       <li>
         <a href="#0" data-signin="signup" data-type="signup">New account</a>
       </li>
+      <!-- <li>
+        <a href="#0" data-signin="reset" data-type="reset">Reset account</a>
+      </li> -->
     </ul>
 
     <div
@@ -79,6 +82,9 @@
           </button>
         </p>
       </form>
+      <p class="cd-signin-modal__bottom-message js-signin-modal-trigger">
+        <a href="#0" data-signin="reset">Forget your password</a>
+      </p>
     </div>
     <!-- cd-signin-modal__block -->
 
@@ -189,19 +195,20 @@
         link to create a new password.
       </p>
 
-      <form class="cd-signin-modal__form">
+      <form class="cd-signin-modal__form" action="/auth/request-reset-email/" method="POST">
+        {% csrf_token %}
         <p class="cd-signin-modal__fieldset">
           <label
             class="cd-signin-modal__label cd-signin-modal__label--email cd-signin-modal__label--image-replace"
             for="reset-email"
-            >UserName</label
+            >E-mail</label
           >
           <input
             class="cd-signin-modal__input cd-signin-modal__input--full-width cd-signin-modal__input--has-padding cd-signin-modal__input--has-border"
             id="reset-email"
-            type="text"
-            name="username"
-            placeholder="UserName"
+            type="email"
+            name="email"
+            placeholder="E-mail"
           />
           <span class="cd-signin-modal__error">Error message here!</span>
         </p>

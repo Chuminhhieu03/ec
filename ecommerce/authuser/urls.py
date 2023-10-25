@@ -8,4 +8,6 @@ urlpatterns = [
     path('profile/',views.handleprofile,name="handleprofile"),
     path('changeprofile/',views.changeProfile,name="changeProfile"),
     path('activate/<uidb64>/<token>',views.ActivateAccountView.as_view(),name='activate'),
+    path('reset/<uidb64>/<token>',views.SetNewPasswordView.as_view(),name='reset'),
+    path('request-reset-email/',views.RequestResetEmailView.as_view(),name='request-reset-email'),
 ]

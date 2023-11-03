@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import render,get_object_or_404,redirect
 from django.contrib import messages
-from .models import Product, ImageGallery, Cart, Order, OrderDetail, Comment
+from .models import Product, ImageGallery, Cart, Order, OrderDetail, Comment, Contact
 from django.http import JsonResponse
 # Create your views here.
 
@@ -192,6 +192,23 @@ def makeComment(request):
         print(e)
         return JsonResponse({'status': 'error', 'message': 'Comment error'})
 
+def makeContact(request):
+    if not request.user.is_authenticated:
+        messages.warning(request, "You need to log in to access")
+        return redirect('/auth/login')
+    try:
+        user = request.user
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        contact = Contact(user=user,contact_name = name,contact_email=email,contact_subject=subject,contact_message=message)
+        contact.save()
+        messages.success(request,"You have successfully submitted your feedback, we will contact you as soon as possible")
+        return redirect('/testimo')
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status': 'error', 'message': 'Contact error'})    
 
 def demo(request):
     return render(request,'demo.html')

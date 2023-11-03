@@ -28,6 +28,9 @@ class Cart(models.Model):
     @property
     def total_cost(self):
         return self.quantity * self.product.price
+    
+    def __str__(self):
+        return self.user
 
 class Order(models.Model):
     id_order = models.BigAutoField(primary_key=True)
@@ -38,12 +41,16 @@ class Order(models.Model):
     value = models.CharField(max_length=100, default="")
     status = models.CharField(max_length=100, default="")
     date = models.DateField(max_length=300)
+    def __str__(self):
+        return self.id_order
 
 class OrderDetail(models.Model):
     id_orderdetail = models.BigAutoField(primary_key=True)
     order = models.ForeignKey(Order,default=None,on_delete=models.CASCADE)
     product = models.ForeignKey(Product,default=None,on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(null=True, blank=True)
+    def __str__(self):
+        return self.order
 
 class Comment(models.Model):
     product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
@@ -52,4 +59,17 @@ class Comment(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     avatar = models.CharField(max_length=255, default="", blank=True)
     full_name = models.CharField(max_length=255, default="", blank=True)
+    def __str__(self):
+        return self.full_name
+    
+
+class Contact(models.Model):
+    user = models.ForeignKey(User,default=None, on_delete=models.CASCADE)
+    contact_name = models.CharField(max_length=100)
+    contact_email = models.CharField(max_length=100)
+    contact_subject = models.CharField(max_length=100)
+    contact_message = models.TextField(max_length=1000)
+    def __str__(self):
+        return self.contact_subject
+
     

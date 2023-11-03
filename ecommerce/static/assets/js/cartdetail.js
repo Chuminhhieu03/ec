@@ -10,7 +10,7 @@ function updateTotal() {
         totalCost += (subCost * quantity);
     });
 
-    totalCostElement.innerHTML = '€ ' + totalCost.toFixed(0); 
+    totalCostElement.innerHTML = '$ ' + totalCost.toFixed(0); 
 }
 
 
